@@ -15,7 +15,7 @@ byte pos = 90;
 char comando[3];
 
 
-//Motor Shield Pins-------------------------------------
+//Motor Shield Pins----------------------------------------------
 const int dirA = 12;
 const int dirB = 13;
 const int pwmA = 10;
