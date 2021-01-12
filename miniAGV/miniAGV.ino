@@ -1,7 +1,7 @@
 
 //---------------------------------------------------------------
-//Descrição: Programa de Teste 
-//Data: 30/08/2016 21:57        Última Atualização: 30/08/2016
+//Descrição: miniAGV 
+//Data: 30/08/2016 21:57        Última Atualização: 12/01/2021
 //Autor: Douglas Lima
 //Comentários:  Teste da Ponte H L298
 //              Teste com Módulo Bluetooth
