@@ -55,9 +55,9 @@ void loop() {
       delay(10);
     }
   }
-  pos = comando[1];
+  pos = comando[0];
 
-  switch (comando[0]) {
+  switch (comando[1]) {
     case'a':
       servo1.write(pos);
       break;
@@ -76,18 +76,18 @@ void loop() {
       }
       break;
     case 'd':
-      if (pos <= 127) {
+      if (pos >= 127) {
         analogWrite(pwmB, 255 - pos*2);
         digitalWrite(dirB, LOW);
       }
-      else if (pos > 127) {
+      else if (pos < 127) {
         pos = pos - 127;
         analogWrite(pwmB, pos*2 - 1);
         digitalWrite(dirB, HIGH);
       }
       break;
       case 'e':
-      comando[0] = 'E';
+      comando[1] = 'E';
       buzz(3);
       break;
   }
