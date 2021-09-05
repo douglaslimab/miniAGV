@@ -1,0 +1,15 @@
+Sensors
+
+	colision avoidance
+	line tracker
+	RFID reader
+
+Controls
+
+	speed control
+	remote control
+	
+
+
+
+AMR - Autonomour Mobile Robot
