@@ -1,6 +1,6 @@
 // Serial data
 
-char serialPack[2];
+int serialPack[4];
 byte spd = 0;
 
 // Motor Shield Pins
@@ -34,20 +34,39 @@ void setup(){
 
 void loop(){
   if (Serial.available()){
-    for(int i = 0; i < 2;i++){
+    for(int i = 0; i < 4 ; i++){
       serialPack[i] = Serial.read();
-      delay(10);
+      delay(5);
     }
   }
-  spd = serialPack[0];
+  spd = 100*(serialPack[1] - '0') + 10*(serialPack[2] - '0') + (serialPack[3] - '0');
 
-  switch (serialPack[1]){
+  switch (serialPack[0]){
     case'c':
     if (spd <= 127){
       analogWrite(pwmA, 255 - spd*2);
       digitalWrite(dirA, HIGH);
+    } else if (spd > 127){
+      spd = spd - 127;
+      analogWrite(pwmA, spd*2 - 1);
+      digitalWrite(dirA, LOW);
     }
-
+    break;
+    case'd':
+    if (spd <= 127){
+      analogWrite(pwmB, 255 - spd*2);
+      digitalWrite(dirB, LOW);
+    } else if ( spd > 127){
+      spd = spd - 127;
+      analogWrite(pwmB, spd*2 - 1);
+      digitalWrite(dirB, HIGH);
+    }
+    break;
+    case'e':{
+      serialPack[0] = 'E';
+      analogWrite(pwmA, 0);
+      analogWrite(pwmB, 0);
+    }
     break;
   }
 }
