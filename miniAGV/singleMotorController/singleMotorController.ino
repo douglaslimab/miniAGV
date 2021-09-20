@@ -14,6 +14,16 @@ const int brkB = 8;
 const int sns0 = A0;
 const int sns1 = A1;
 
+//  Time Control
+
+unsigned long currentMillis;
+long previousMillis = 0;
+long previousMillis2 = 0;
+long previousMillis3 = 0;
+float loopTime = 10;
+
+// Buzzer
+
 const int speaker = 4;
 
 void setup(){
@@ -33,14 +43,34 @@ void setup(){
 }
 
 void loop(){
-  if (Serial.available()){
-    for(int i = 0; i < 4 ; i++){
-      serialPack[i] = Serial.read();
-      delay(5);
-    }
-  }
-  spd = 100*(serialPack[1] - '0') + 10*(serialPack[2] - '0') + (serialPack[3] - '0');
+  currentMillis = millis();
 
+  //Receive Serial Data Package------------------------------------------------------------------------  
+  if (currentMillis - previousMillis >= loopTime) {
+    previousMillis = currentMillis;
+    if (Serial.available()){
+      for(int i = 0; i < 4 ; i++){
+        serialPack[i] = Serial.read();
+        delay(5);
+      }
+    }
+    spd = 100*(serialPack[1] - '0') + 10*(serialPack[2] - '0') + (serialPack[3] - '0');
+
+    execute();  
+   }
+   
+  //Show Speed wheels status---------------------------------------------------------------------------
+  if (currentMillis - previousMillis2 >= 1000){
+    previousMillis2 = currentMillis;
+  }
+  
+  //Encoders Check-------------------------------------------------------------------------------------
+  if (currentMillis - previousMillis3 >= 40){
+    previousMillis3 = currentMillis;
+  }  
+}
+
+void execute(){
   switch (serialPack[0]){
     case'c':
     if (spd <= 127){
@@ -68,5 +98,5 @@ void loop(){
       analogWrite(pwmB, 0);
     }
     break;
-  }
+  }  
 }
