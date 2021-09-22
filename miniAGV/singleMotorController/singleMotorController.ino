@@ -2,6 +2,7 @@
 
 int serialPack[4];
 byte spd = 0;
+byte data_tester = 0;
 
 // Motor Shield Pins
 
@@ -98,5 +99,10 @@ void execute(){
       analogWrite(pwmB, 0);
     }
     break;
+    case'f':{
+      data_tester = (serialPack[0] - '0') + (serialPack[1] - '0') + (serialPack[2] - '0');
+      Serial.print(data_tester);
+      delay(5);
+    }
   }  
 }
