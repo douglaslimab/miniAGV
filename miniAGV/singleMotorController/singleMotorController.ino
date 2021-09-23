@@ -103,6 +103,21 @@ void execute(){
       data_tester = (serialPack[0] - '0') + (serialPack[1] - '0') + (serialPack[2] - '0');
       Serial.print(data_tester);
       delay(5);
+    break;
+    }
+    case'g':{
+      buzz(10);
+    break;
     }
   }  
+}
+
+void buzz(int f){
+  int i = 0;
+  for(i = 0; i < 10; i++){
+    digitalWrite(speaker, HIGH);
+    delay(f);
+    digitalWrite(speaker, LOW);
+    delay(f);
+  }
 }
