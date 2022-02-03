@@ -4,12 +4,9 @@ This is a small version of my AGV I built as final project in my Mechatronics De
 
 # Technologies used
 
-  -> Board Controller
-    Arduino Mega,
+  -> Arduino Mega;
     
-  -> Language
-    C++,
+  -> C++;
     
-  -> Modules
-    L298P Motor Driver Shield,
-    HC-06 Bluetooth Module
+  -> L298P Motor Driver Shield,
+    HC-06 Bluetooth Module;
