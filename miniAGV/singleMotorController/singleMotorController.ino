@@ -15,6 +15,16 @@ const int brkB = 8;
 const int sns0 = A0;
 const int sns1 = A1;
 
+// Ultrassom Pins
+
+const int trig = 5;
+const int echo = 6;
+
+// Ultrassom variables
+
+long duration;
+int distance;
+
 //  Time Control
 
 unsigned long currentMillis;
@@ -27,7 +37,7 @@ float loopTime = 10;
 
 const int speaker = 4;
 
-void setup(){
+void setup() {
   Serial.begin(9600);
 
   pinMode(dirA, OUTPUT);
@@ -39,82 +49,102 @@ void setup(){
 
   pinMode(speaker, OUTPUT);
 
+  pinMode(trig, OUTPUT);
+  pinMode(echo, INPUT);
+
   digitalWrite(brkA, LOW);
   digitalWrite(brkB, LOW);
 }
 
-void loop(){
+void loop() {
   currentMillis = millis();
 
-  //Receive Serial Data Package------------------------------------------------------------------------  
+  //Receive Serial Data Package------------------------------------------------------------------------
   if (currentMillis - previousMillis >= loopTime) {
     previousMillis = currentMillis;
-    if (Serial.available()){
-      for(int i = 0; i < 4 ; i++){
+    if (Serial.available()) {
+      for (int i = 0; i < 4; i++) {
         serialPack[i] = Serial.read();
         delay(5);
       }
     }
-    spd = 100*(serialPack[1] - '0') + 10*(serialPack[2] - '0') + (serialPack[3] - '0');
+    spd = 100 * (serialPack[1] - '0') + 10 * (serialPack[2] - '0') + (serialPack[3] - '0');
 
-    execute();  
-   }
-   
-  //Show Speed wheels status---------------------------------------------------------------------------
-  if (currentMillis - previousMillis2 >= 1000){
-    previousMillis2 = currentMillis;
+    execute();
   }
-  
-  //Encoders Check-------------------------------------------------------------------------------------
-  if (currentMillis - previousMillis3 >= 40){
-    previousMillis3 = currentMillis;
-  }  
-}
 
-void execute(){
-  switch (serialPack[0]){
-    case'c':
-    if (spd <= 127){
-      analogWrite(pwmA, 255 - spd*2);
-      digitalWrite(dirA, HIGH);
-    } else if (spd > 127){
-      spd = spd - 127;
-      analogWrite(pwmA, spd*2 - 1);
-      digitalWrite(dirA, LOW);
-    }
-    break;
-    case'd':
-    if (spd <= 127){
-      analogWrite(pwmB, 255 - spd*2);
-      digitalWrite(dirB, LOW);
-    } else if ( spd > 127){
-      spd = spd - 127;
-      analogWrite(pwmB, spd*2 - 1);
-      digitalWrite(dirB, HIGH);
-    }
-    break;
-    case'e':{
-      serialPack[0] = 'E';
-      analogWrite(pwmA, 0);
-      analogWrite(pwmB, 0);
-    }
-    break;
-    case'f':{
-      data_tester = (serialPack[0] - '0') + (serialPack[1] - '0') + (serialPack[2] - '0');
-      Serial.print(data_tester);
-      delay(5);
-    break;
-    }
-    case'g':{
+  //Show Speed wheels status---------------------------------------------------------------------------
+  if (currentMillis - previousMillis2 >= 1000) {
+    previousMillis2 = currentMillis;
+
+    digitalWrite(trig, LOW);
+    delayMicroseconds(2);
+
+    digitalWrite(trig, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trig, LOW);
+
+    duration = pulseIn(echo, HIGH);
+    distance = duration*0.034/2;
+
+    if(distance < 10){
       buzz(10);
-    break;
     }
-  }  
+  }
+
+  //Encoders Check-------------------------------------------------------------------------------------
+  if (currentMillis - previousMillis3 >= 40) {
+    previousMillis3 = currentMillis;
+  }
 }
 
-void buzz(int f){
+void execute() {
+  switch (serialPack[0]) {
+    case 'c':
+      if (spd <= 127) {
+        analogWrite(pwmA, 255 - spd * 2);
+        digitalWrite(dirA, HIGH);
+      } else if (spd > 127) {
+        spd = spd - 127;
+        analogWrite(pwmA, spd * 2 - 1);
+        digitalWrite(dirA, LOW);
+      }
+      break;
+    case 'd':
+      if (spd <= 127) {
+        analogWrite(pwmB, 255 - spd * 2);
+        digitalWrite(dirB, LOW);
+      } else if (spd > 127) {
+        spd = spd - 127;
+        analogWrite(pwmB, spd * 2 - 1);
+        digitalWrite(dirB, HIGH);
+      }
+      break;
+    case 'e':
+      {
+        serialPack[0] = 'E';
+        analogWrite(pwmA, 0);
+        analogWrite(pwmB, 0);
+      }
+      break;
+    case 'f':
+      {
+        data_tester = (serialPack[0] - '0') + (serialPack[1] - '0') + (serialPack[2] - '0');
+        Serial.print(data_tester);
+        delay(5);
+        break;
+      }
+    case 'g':
+      {
+        buzz(10);
+        break;
+      }
+  }
+}
+
+void buzz(int f) {
   int i = 0;
-  for(i = 0; i < 10; i++){
+  for (i = 0; i < 10; i++) {
     digitalWrite(speaker, HIGH);
     delay(f);
     digitalWrite(speaker, LOW);
